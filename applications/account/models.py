@@ -3,12 +3,13 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.hashers import make_password
 
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
         email = self.normalize_email(email)
-        
+
         user = self.model(email=email, **extra_fields)
         user.password = make_password(password)  # '1' -> sdjfhue8rb3457fgidysuif
         user.create_activation_code()
@@ -32,17 +33,17 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_fields)
 
+
 class CustomUser(AbstractUser):
+    user_list = [('default', 'Customer'), ('business', 'Business')]
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
-    
     activation_code = models.CharField(max_length=50, blank=True)
-
-    username = None
     is_active = models.BooleanField(default=False)
-    
+    category = models.CharField(choices=user_list, default='default', max_length=50)
+
     objects = UserManager()
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -52,4 +53,4 @@ class CustomUser(AbstractUser):
     def create_activation_code(self):
         import uuid
         code = str(uuid.uuid4())
-        self.activation_code = code 
+        self.activation_code = code

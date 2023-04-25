@@ -2,18 +2,21 @@ from rest_framework.views import APIView
 from .serializers import *
 from rest_framework.response import Response
 from .models import CustomUser
+
+
 # from django.contrib.auth import get_user_model
 
 # # User = get_user_model()
 
 class RegisterAPIView(APIView):
-    
+
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         return Response('Вы успешно зарегистрировались. Вам отправлено письмо с активацией', status=201)
+
 
 class ActivationView(APIView):
     def get(self, request, activation_code):
@@ -25,13 +28,15 @@ class ActivationView(APIView):
             return Response('Успешно', status=200)
         except CustomUser.DoesNotExist:
             return Response('Link expired', status=400)
-        
-class ForgotPasswordPIView(APIView):
+
+
+class ForgotPasswordAPIView(APIView):
     def post(self, request):
         serializer = ForgotPasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.send_reset_password_code()
         return Response('вам отправлено письмо для восстановления пароля')
+
 
 class ForgotPasswordCompleteAPIView(APIView):
     def post(self, request):
