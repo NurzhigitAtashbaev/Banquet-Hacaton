@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
-from account.serializers import *
+from .serializers import *
 from rest_framework.response import Response
-from django.contrib.auth import get_user_model
+from .models import CustomUser
+# from django.contrib.auth import get_user_model
 
-User = get_user_model()
+# # User = get_user_model()
 
 class RegisterAPIView(APIView):
     
@@ -17,12 +18,12 @@ class RegisterAPIView(APIView):
 class ActivationView(APIView):
     def get(self, request, activation_code):
         try:
-            user = User.objects.get(activation_code=activation_code)
+            user = CustomUser.objects.get(activation_code=activation_code)
             user.is_active = True
             user.activation_code = ''
             user.save()
             return Response('Успешно', status=200)
-        except User.DoesNotExist:
+        except CustomUser.DoesNotExist:
             return Response('Link expired', status=400)
         
 class ForgotPasswordPIView(APIView):

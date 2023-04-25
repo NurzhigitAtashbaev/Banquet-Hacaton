@@ -35,10 +35,12 @@ class UserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
-    is_active = models.BooleanField(default=False)
-    username = None
+    
     activation_code = models.CharField(max_length=50, blank=True)
 
+    username = None
+    is_active = models.BooleanField(default=False)
+    
     objects = UserManager()
     
     USERNAME_FIELD = 'email'

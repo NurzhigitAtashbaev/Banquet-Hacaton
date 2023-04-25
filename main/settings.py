@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
-    # 'rest_framework_simplejwt',
+    'rest_framework_simplejwt',
 
     'applications.account',
 ]
@@ -151,3 +151,6 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=59),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND  ='redis://localhost:6379'
