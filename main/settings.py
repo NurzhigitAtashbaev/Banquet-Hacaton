@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 
     'applications.account',
+    'restaurants.apps.RestaurantsConfig',
 ]
 
 MIDDLEWARE = [
