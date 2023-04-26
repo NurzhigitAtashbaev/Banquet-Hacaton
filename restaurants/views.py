@@ -1,32 +1,22 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Favorite, Restaurants
-from .serializers import FavoriteSerializer
+from rest_framework import generics, permissions
+from .models import Restaurant
+from applications.account.models import CustomUser
+from .serializers import RestaurantSerializer, UserSerializer
 
 
-class FavoriteView(APIView):
-    def post(self, request, restaurant_id):
-        user = request.user
-        restaurant = Restaurants.objects.get(id=restaurant_id)
-        favorite, created = Favorite.objects.get_or_create(user=user, restaurant=restaurant)
-        if created:
-            return Response(FavoriteSerializer(favorite).data, status=status.HTTP_201_CREATED)
-        return Response({'detail': 'Already in favorites'}, status=status.HTTP_400_BAD_REQUEST)
+class FavoriteListCreateView(generics.ListCreateAPIView):
+    queryset = Restaurant.objects.all()
+    serializer_class = RestaurantSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-    def delete(self, request, restaurant_id):
-        user = request.user
-        restaurant = Restaurants.objects.get(id=restaurant_id)
-        favorite = Favorite.objects.filter(user=user, restaurant=restaurant).first()
-        if favorite:
-            favorite.delete()
-            return Response({'detail': 'Removed from favorites'})
-        return Response({'detail': 'Not in favorites'}, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        serializer.save(fans=[self.request.user])
 
 
-class FavoriteListView(APIView):
-    def get(self, request):
-        user = request.user
-        favorites = Favorite.objects.filter(user=user)
-        serializer = FavoriteSerializer(favorites, many=True)
-        return Response(serializer.data)
+class UserDetailView(generics.RetrieveAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user

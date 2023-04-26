@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.hashers import make_password
+from restaurants.models import Restaurant
 
 
 class UserManager(BaseUserManager):
@@ -41,6 +42,7 @@ class CustomUser(AbstractUser):
     activation_code = models.CharField(max_length=50, blank=True)
     is_active = models.BooleanField(default=False)
     category = models.CharField(choices=user_list, default='default', max_length=50)
+    favorites = models.ManyToManyField(Restaurant, related_name='favorite')
 
     objects = UserManager()
 

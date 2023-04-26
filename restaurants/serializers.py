@@ -1,16 +1,17 @@
 from rest_framework import serializers
-from .models import Restaurants, Favorite
+from .models import Restaurant
+from applications.account.models import CustomUser
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Restaurants
+        model = Restaurant
         fields = '__all__'
 
 
-class FavoriteSerializer(serializers.ModelSerializer):
-    restaurant = RestaurantSerializer()
+class UserSerializer(serializers.ModelSerializer):
+    favorites = RestaurantSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Favorite
-        fields = ('restaurant',)
+        model = CustomUser
+        fields = ['id', 'username', 'favorites']
