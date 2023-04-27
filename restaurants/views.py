@@ -1,6 +1,7 @@
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 
+from applications.account.models import CustomUser
 from .models import Restaurants
 from .permissions import IsBusinessUser
 from .serializers import RestaurantSerializer
@@ -19,3 +20,12 @@ class RetrieveUpdateDestroyRestaurant(RetrieveUpdateDestroyAPIView):
     queryset = Restaurants.objects.all()
     serializer_class = RestaurantSerializer
     permission_classes = [IsAuthenticated, IsBusinessUser]
+
+
+class FavoriteListCreateView(ListCreateAPIView):
+    queryset = Restaurants.objects.all()
+    serializer_class = RestaurantSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(fans=[self.request.user])
