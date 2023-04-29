@@ -1,10 +1,11 @@
 from django.urls import path
-from .views import FavoriteListCreateView, UserDetailView,CreateRestaurant, RetrieveUpdateDestroyRestaurant
+from .views import (AddToFavorite, CreateRestaurant, RetrieveUpdateDestroyRestaurant, FavoriteList, RemoveFromFavorite)
 
 urlpatterns = [
+    # path('all/', RestaurantListView.as_view(), name='restaurant-list'),
     path('create/', CreateRestaurant.as_view()),
     path('update/<int:pk>/', RetrieveUpdateDestroyRestaurant.as_view()),
-    path('favorites/', FavoriteListCreateView.as_view(), name='favorite-list-create'),
-    path('users/me/', UserDetailView.as_view(), name='user-detail'),
+    path('add-to-favorite/', AddToFavorite.as_view(), name='add-to-favorite'),
+    path('favorites/', FavoriteList.as_view(), name='favorite-list'),
+    path('remove-favorite/<int:pk>', RemoveFromFavorite.as_view(), name='remove-from-favorite')
 ]
-

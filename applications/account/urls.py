@@ -11,6 +11,5 @@ urlpatterns = [
 
     path('reset_password', ForgotPasswordAPIView.as_view()),
     path('reset_password_complete', ForgotPasswordCompleteAPIView.as_view()),
-    path('users/me/', UserDetailView.as_view(), name='user-detail')
 
 ]
