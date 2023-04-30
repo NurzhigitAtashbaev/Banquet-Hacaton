@@ -17,7 +17,6 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -28,7 +27,6 @@ SECRET_KEY = 'Пусть пока ключ будет тут когда пулл
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -47,7 +45,6 @@ INSTALLED_APPS = [
     'applications.account',
 
     'restaurants.apps.RestaurantsConfig',
-
 
 ]
 
@@ -81,7 +78,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -110,7 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -121,7 +116,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -143,9 +137,10 @@ EMAIL_HOST_PASSWORD = 'EMAIL_HOST_PASSWORD'
 EMAIL_HOST_USER = 'EMAIL_HOST_USER'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':[
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 MEDIA_URL = '/media/'
@@ -157,4 +152,4 @@ SIMPLE_JWT = {
 }
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND  ='redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
