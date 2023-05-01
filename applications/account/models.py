@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.hashers import make_password
 
-
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -11,7 +10,7 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
 
         user = self.model(email=email, **extra_fields)
-        user.password = make_password(password)  # '1' -> sdjfhue8rb3457fgidysuif
+        user.password = make_password(password)
         user.create_activation_code()
         user.save(using=self._db)
         return user
@@ -39,9 +38,14 @@ class CustomUser(AbstractUser):
     username = models.CharField(max_length=200, null=True, blank=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
+    category = models.CharField(choices=user_list, default='default', max_length=50)
+    
+    first_name = models.CharField(max_length=50, null=True, blank=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars')
+    
     activation_code = models.CharField(max_length=50, blank=True)
     is_active = models.BooleanField(default=False)
-    category = models.CharField(choices=user_list, default='default', max_length=50)
 
     objects = UserManager()
 

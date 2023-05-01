@@ -1,4 +1,5 @@
 from django.db import models
+from applications.account.models import CustomUser
 
 from applications.account.models import CustomUser
 

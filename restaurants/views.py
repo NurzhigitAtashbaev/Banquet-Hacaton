@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Restaurants, Favorite
 from .permissions import IsBusinessUser
 from .serializers import RestaurantSerializer, FavoriteSerializer
+from rest_framework.response import Response
 
 
 class RestaurantFilter(django_filters.FilterSet):
