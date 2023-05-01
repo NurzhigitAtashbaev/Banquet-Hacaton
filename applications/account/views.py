@@ -1,4 +1,4 @@
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .serializers import *
@@ -10,14 +10,9 @@ from .models import CustomUser
 
 # # User = get_user_model()
 
-class RegisterAPIView(APIView):
-
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response('Вы успешно зарегистрировались. Вам отправлено письмо с активацией', status=201)
+class RegisterView(CreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = RegisterSerializer
 
 
 class ActivationView(APIView):

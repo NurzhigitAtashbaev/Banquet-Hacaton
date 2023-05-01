@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import django_filters
 from rest_framework import generics
 from rest_framework.mixins import CreateModelMixin
@@ -34,6 +35,17 @@ class RestaurantListView(ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+=======
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListCreateAPIView, \
+    ListAPIView, GenericAPIView, DestroyAPIView
+from rest_framework.mixins import CreateModelMixin
+from rest_framework.permissions import IsAuthenticated
+
+from applications.account.models import CustomUser
+from .models import Restaurants, Favorite
+from .permissions import IsBusinessUser
+from .serializers import RestaurantSerializer, FavoriteSerializer
+>>>>>>> master
 
 
 class CreateRestaurant(CreateAPIView):
@@ -51,7 +63,11 @@ class RetrieveUpdateDestroyRestaurant(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsBusinessUser]
 
 
+<<<<<<< HEAD
 class AddToFavorite(generics.GenericAPIView, CreateModelMixin):
+=======
+class AddToFavorite(GenericAPIView, CreateModelMixin):
+>>>>>>> master
     # permission_classes = [IsAuthenticated]
     serializer_class = FavoriteSerializer
     queryset = Favorite.objects.all()

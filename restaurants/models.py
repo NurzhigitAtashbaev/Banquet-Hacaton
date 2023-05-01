@@ -1,6 +1,8 @@
 from django.db import models
 from applications.account.models import CustomUser
 
+from applications.account.models import CustomUser
+
 
 class Restaurant(models.Model):
     name = models.CharField(max_length=155, )
@@ -13,6 +15,11 @@ class Restaurant(models.Model):
 
 class Favorite(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+<<<<<<< HEAD
     item = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
 
+=======
+    item = models.ForeignKey(Restaurants, on_delete=models.CASCADE)
+    date_added = models.DateTimeField(auto_now_add=True)
+>>>>>>> master
