@@ -17,3 +17,11 @@ class Favorite(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     item = models.ForeignKey(Restaurants, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurants, on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
