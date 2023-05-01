@@ -1,32 +1,73 @@
-from rest_framework.views import APIView
+import django_filters
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListCreateAPIView, \
+    ListAPIView, GenericAPIView, DestroyAPIView
+from rest_framework.mixins import CreateModelMixin
+from rest_framework.permissions import IsAuthenticated
+from .models import Restaurants, Favorite
+from .permissions import IsBusinessUser
+from .serializers import RestaurantSerializer, FavoriteSerializer
 from rest_framework.response import Response
-from rest_framework import status
-from .models import Favorite, Restaurants
-from .serializers import FavoriteSerializer
 
 
-class FavoriteView(APIView):
-    def post(self, request, restaurant_id):
-        user = request.user
-        restaurant = Restaurants.objects.get(id=restaurant_id)
-        favorite, created = Favorite.objects.get_or_create(user=user, restaurant=restaurant)
-        if created:
-            return Response(FavoriteSerializer(favorite).data, status=status.HTTP_201_CREATED)
-        return Response({'detail': 'Already in favorites'}, status=status.HTTP_400_BAD_REQUEST)
+class RestaurantFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(field_name='name', lookup_expr='istartswith')
 
-    def delete(self, request, restaurant_id):
-        user = request.user
-        restaurant = Restaurants.objects.get(id=restaurant_id)
-        favorite = Favorite.objects.filter(user=user, restaurant=restaurant).first()
-        if favorite:
-            favorite.delete()
-            return Response({'detail': 'Removed from favorites'})
-        return Response({'detail': 'Not in favorites'}, status=status.HTTP_400_BAD_REQUEST)
+    class Meta:
+        model = Restaurants
+        fields = ['name']
 
 
-class FavoriteListView(APIView):
-    def get(self, request):
-        user = request.user
-        favorites = Favorite.objects.filter(user=user)
-        serializer = FavoriteSerializer(favorites, many=True)
+class RestaurantListView(ListAPIView):
+    queryset = Restaurants.objects.all()
+    serializer_class = RestaurantSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_class = RestaurantFilter
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        # обработка параметра запроса search
+        search = request.query_params.get('search', None)
+        if search is not None:
+            queryset = queryset.filter(name__icontains=search)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class CreateRestaurant(CreateAPIView):
+    queryset = Restaurants.objects.all()
+    serializer_class = RestaurantSerializer
+    permission_classes = [IsAuthenticated, IsBusinessUser]
+
+    def perform_create(self, serializer):
+        serializer.save(business=self.request.user)  # Сохранение ресторана с указанием пользователя
+
+
+class RetrieveUpdateDestroyRestaurant(RetrieveUpdateDestroyAPIView):
+    queryset = Restaurants.objects.all()
+    serializer_class = RestaurantSerializer
+    permission_classes = [IsAuthenticated, IsBusinessUser]
+
+
+class AddToFavorite(GenericAPIView, CreateModelMixin):
+    #permission_classes = [IsAuthenticated]
+    serializer_class = FavoriteSerializer
+    queryset = Favorite.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class FavoriteList(ListAPIView):
+    # permission_classes = [IsAuthenticated]
+    serializer_class = FavoriteSerializer
+
+    def get_queryset(self):
+        return Favorite.objects.filter(user=self.request.user)
+
+
+class RemoveFromFavorite(DestroyAPIView):
+    # permission_classes = [IsAuthenticated]
+    serializer_class = FavoriteSerializer
+    queryset = Favorite.objects.all()

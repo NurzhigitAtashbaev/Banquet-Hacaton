@@ -1,13 +1,12 @@
 from rest_framework import serializers
+
+from restaurants.serializers import RestaurantSerializer
+# from django.contrib.auth import get_user_model
 from .models import CustomUser
 from .send_email import send_activation_code, send_reset_password_code
 
 
-class UserSerializers(serializers.ModelSerializer):
-
-    class Meta:
-        model = CustomUser
-        fields = '__all__'
+# User = get_user_model()  # CustomUser
 
 class RegisterSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(
@@ -77,3 +76,11 @@ class ForgotPasswordComleteSerializer(serializers.Serializer):
         user.set_password(password)
         user.activation_code = ''
         user.save(update_fields=['password', 'activation_code'])
+
+
+class UserSerializer(serializers.ModelSerializer):
+    favorites = RestaurantSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'favorites']
