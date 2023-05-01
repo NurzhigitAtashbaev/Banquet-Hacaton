@@ -1,5 +1,5 @@
-django~=4.2
-djangorestframework~=3.14.0
+django
+djangorestframework
 psycopg2-binary
 python-decouple
 django-filter
@@ -7,10 +7,10 @@ dj_database_url
 pillow
 drf-yasg
 djangorestframework-simplejwt
-celery~=5.2.7
+celery
 django-celery-beat
 django-celery-results
 redis
-
-dj-config-url~=0.1.1
-decouple~=0.0.7
+django-cors-headers
+django-rest-swagger
+dj-config-url

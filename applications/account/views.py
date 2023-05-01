@@ -2,11 +2,9 @@ from rest_framework.views import APIView
 from .serializers import *
 from rest_framework.response import Response
 from .models import CustomUser
+from django.contrib.auth import authenticate
+from rest_framework.permissions import IsAuthenticated
 
-
-# from django.contrib.auth import get_user_model
-
-# # User = get_user_model()
 
 class RegisterAPIView(APIView):
 
@@ -28,6 +26,22 @@ class ActivationView(APIView):
             return Response('Успешно', status=200)
         except CustomUser.DoesNotExist:
             return Response('Link expired', status=400)
+
+class ChangePasswordAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+        email = request.user.email
+        user = authenticate(email=email, password=old_password)
+
+        if user is not None:
+            user.set_password(new_password)
+            user.save()
+            return Response({'detail': 'Пароль успешно обновлен.'}, status=200)
+        else:
+            return Response({'detail': 'Недействительные учетные данные.'}, status=400)
 
 
 class ForgotPasswordAPIView(APIView):
