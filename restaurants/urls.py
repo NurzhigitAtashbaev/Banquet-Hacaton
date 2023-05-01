@@ -1,10 +1,7 @@
 from django.urls import path
-<<<<<<< HEAD
 from .views import (AddToFavorite, CreateRestaurant, RetrieveUpdateDestroyRestaurant, FavoriteList, RemoveFromFavorite,
                     RestaurantListView)
-=======
-from .views import (CreateRestaurant, RetrieveUpdateDestroyRestaurant, FavoriteListCreateView)
->>>>>>> master
+
 
 urlpatterns = [
     path('all/', RestaurantListView.as_view(), name='restaurant-list'),
