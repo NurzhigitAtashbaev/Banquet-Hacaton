@@ -1,12 +1,15 @@
 import django_filters
+from rest_framework import views, viewsets
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListCreateAPIView, \
     ListAPIView, GenericAPIView, DestroyAPIView
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
-from .models import Restaurants, Favorite
+from .models import Restaurants, Favorite, Comment
 from .permissions import IsBusinessUser
-from .serializers import RestaurantSerializer, FavoriteSerializer
+from .serializers import RestaurantSerializer, FavoriteSerializer, CommentSerializer
 from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import action
 
 
 class RestaurantFilter(django_filters.FilterSet):
@@ -71,3 +74,49 @@ class RemoveFromFavorite(DestroyAPIView):
     # permission_classes = [IsAuthenticated]
     serializer_class = FavoriteSerializer
     queryset = Favorite.objects.all()
+
+class CommentAPIView(views.APIView):
+    permission_classes = [IsAuthenticated, IsBusinessUser]
+    
+    def get(self, request):
+        comment = Comment.objects.all()
+        serializer = CommentSerializer(comment, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(owner=self.request.user)
+        return Response(serializer.data, status=201)
+    
+        
+class CommentDetailAPIView(views.APIView):
+    def get_comment(self, pk):
+        try:
+            return Comment.objects.get(id=pk)
+        except Comment.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        comment = self.get_comment(pk)
+        if comment:
+            serializer = CommentSerializer(comment)
+            return Response(serializer.data)
+        return Response(status=404)
+
+    def put(self, request, pk):
+        comment = self.get_comment(pk)
+        if comment:
+            serializer = CommentSerializer(comment, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=400)
+        return Response('такого коммента нет', status=404)
+
+    def delete(self, request, pk):
+        comment = self.get_comment(pk)
+        if comment:
+            comment.delete()
+            return Response(status=204)
+        return Response(status=404)

@@ -50,3 +50,4 @@ class UserDetailView(RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+    
