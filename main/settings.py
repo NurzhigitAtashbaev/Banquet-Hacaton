@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
 
+    'restaurants',
     'applications.account',
-    'restaurants.apps.RestaurantsConfig',
 ]
 
 MIDDLEWARE = [
