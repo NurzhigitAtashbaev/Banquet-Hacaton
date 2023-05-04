@@ -13,6 +13,7 @@ urlpatterns = [
     path('reset_password_complete', ForgotPasswordCompleteAPIView.as_view()),
     path('users/me/', UserDetailView.as_view(), name='user-detail'),
 
-    path('update/', CustomUserUpdateAPIView.as_view())
+    path('update/', CustomUserUpdateAPIView.as_view()),
+    path('all-info/', AccountView.as_view()),
 
 ]
