@@ -10,9 +10,15 @@ from .models import CustomUser
 
 # # User = get_user_model()
 
-class RegisterView(CreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = RegisterSerializer
+class RegisterView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response('вам на почту отправлено письмо. продите по нему чтобы актевировать аккаунт', status=200)
+        else:
+            return Response(serializer.errors, status=400)
+
 
 
 class ActivationView(APIView):
@@ -51,3 +57,12 @@ class UserDetailView(RetrieveAPIView):
     def get_object(self):
         return self.request.user
     
+class CustomUserUpdateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    def put(self, request):
+        user = request.user
+        serializer = UpdateSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)

@@ -8,6 +8,12 @@ from .send_email import send_activation_code, send_reset_password_code
 
 # User = get_user_model()  # CustomUser
 
+class UpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'first_name', 'last_name', 'avatar')
+
 class RegisterSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(
         required=True,
@@ -17,7 +23,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'password', 'password2')
+        fields = ('email', 'password', 'password2', 'avatar', 'first_name', 'last_name', 'username')
 
     def validate_email(self, email):
         return email
