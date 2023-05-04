@@ -68,7 +68,7 @@ class CustomUserUpdateAPIView(APIView):
         return Response(serializer.errors, status=400)
     
     
- class UserDetailView(RetrieveAPIView):
+ class AccountView(RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = AccountSerializer
     permission_classes = [IsAuthenticated]
