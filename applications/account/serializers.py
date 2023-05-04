@@ -8,6 +8,12 @@ from .send_email import send_activation_code, send_reset_password_code
 
 # User = get_user_model()  # CustomUser
 
+class AccountSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
+    
 class UpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
