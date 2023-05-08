@@ -17,11 +17,22 @@ class Category(models.Model):
 class Restaurant(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='restaurants')
     name = models.CharField(max_length=155, )
-    image = models.ImageField(upload_to='restaurant-image', )
+    #image = models.ImageField(upload_to='restaurant-image', )
     price_people = models.CharField(max_length=225)
     locate = models.CharField(max_length=200)
     working_hours = models.CharField(max_length=200)
     features = models.TextField(max_length=1000)
+
+    def __str__(self):
+        return "%s" % (self.name)
+
+
+class RestaurantImage(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='restaurant-image')
+
+    def __str__(self):
+        return "%s" % (self.restaurant.name)
 
 
 class Favorite(models.Model):

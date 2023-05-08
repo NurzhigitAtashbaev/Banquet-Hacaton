@@ -20,7 +20,7 @@ PRICE_CHOICES = (
     ('1', '1000-1500'),
     ('2', '1500-2000'),
     ('3', '2000-3000'),
-    ('4', 'Более 3000')
+    ('4', '3000 и выше')
 )
 
 
@@ -56,10 +56,10 @@ class RestaurantListView(ListAPIView):
 class CreateRestaurant(CreateAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
-    permission_classes = [IsAuthenticated, IsBusinessUser]
+    #permission_classes = [IsAuthenticated, IsBusinessUser]
 
-    def perform_create(self, serializer):
-        serializer.save(business=self.request.user)  # Сохранение ресторана с указанием пользователя
+   # def perform_create(self, serializer):
+       # serializer.save(business=self.request.user)  # Сохранение ресторана с указанием пользователя
 
 
 class RetrieveUpdateDestroyRestaurant(RetrieveUpdateDestroyAPIView):
