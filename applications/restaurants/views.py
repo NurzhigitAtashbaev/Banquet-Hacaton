@@ -177,5 +177,46 @@ class RatingAPIView(views.APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class CalculateView(views.APIView):
+    def post(self, request):
+        # Получаем данные из запроса
+        quantity = float(request.data.get('quantity'))
+
+        # Рассчитываем количество продуктов
+        fruits = {'apples': str(quantity * 0.1) + ' kg', 'pears': str(quantity * 0.1) + ' kg',
+                  'oranges': str(quantity * 0.05) + ' kg',
+                  'grapes': str(quantity * 0.05) + ' kg', 'tangerines': str(quantity * 0.05) + ' kg',
+                  'apricots': str(quantity * 0.05) + ' kg', 'bananas': str(quantity * 0.52) + ' things'}
+        dried_fruits = {'figs': str(quantity * 0.05) + ' kg', 'prunes': str(quantity * 0.05) + ' kg',
+                        'raisins': str(quantity * 0.05) + ' kg', 'dried_apricots': str(quantity * 0.05) + ' kg',
+                        'dates': str(quantity * 0.05) + ' kg'}
+        vegetables = {'cucumbers': str(quantity * 0.1) + ' kg', 'tomatoes': str(quantity * 0.1) + ' kg',
+                      'bell_peppers': str(quantity * 0.1) + ' kg', 'chuchuk': str(quantity * 0.05) + ' kg',
+                      'karyn': str(quantity * 0.05) + ' kg'}
+        candies = {'chocolates': str(quantity * 0.05) + ' kg', 'cookies': str(quantity * 0.05) + ' kg',
+                   'sugar': str(quantity * 0.05) + '  pack'}
+        drinks = {'juice': str(quantity * 1.0) + ' liter', 'mineral_water': str(quantity * 1.5) + ' liter',
+                  'vodka': str(quantity * 0.25) + ' liter', 'wine': str(quantity * 0.5) + ' liter',
+                  'brandy': str(quantity * 0.25) + ' liter'}
+        noodles = {'noodles': str(quantity * 1.0) + ' kg'}
+        tea = {'tea': str(quantity * 0.1) + ' kg', 'black_tea': str(quantity * 0.5) + ' kg',
+               'green_tea': str(quantity * 0.5) + ' kg'}
+        bread = {'bread': str((quantity // 12) * 12) + ' pieces'}
+        boorsok = {'boorsok': str(quantity * 0.083) + ' kg'}
+
+        # Возвращаем результаты расчета
+        response_data = {
+            'fruits': fruits,
+            'dried_fruits': dried_fruits,
+            'vegetables': vegetables,
+            'candies': candies,
+            'drinks': drinks,
+            'noodles': noodles,
+            'tea': tea,
+            'bread': bread,
+            'boorsok': boorsok
+        }
+        return Response(response_data)
+
 
 
