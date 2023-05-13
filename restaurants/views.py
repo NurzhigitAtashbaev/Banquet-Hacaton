@@ -1,30 +1,59 @@
 import django_filters
-from rest_framework import views, viewsets
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListCreateAPIView, \
+from rest_framework import views
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, \
     ListAPIView, GenericAPIView, DestroyAPIView
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
-from .models import Restaurants, Favorite, Comment
+from .models import Restaurants, Favorite, Comment, Rating
 from .permissions import IsBusinessUser
-from .serializers import RestaurantSerializer, FavoriteSerializer, CommentSerializer
+from .serializers import RestaurantSerializer, FavoriteSerializer, CommentSerializer, RatingSerializer
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
-from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter, SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import ModelMultipleChoiceFilter
+from django.db.models import Avg
+
+
+class LargeResultsSetPagination(PageNumberPagination):
+    page_size = 12
+    page_size_query_param = 'page_size'
+    max_page_size = 100000
 
 
 class RestaurantFilter(django_filters.FilterSet):
-    name = django_filters.CharFilter(field_name='name', lookup_expr='istartswith')
+    locate = django_filters.CharFilter(lookup_expr='icontains')
+    min_rating = django_filters.NumberFilter(method='filter_min_rating', label='Рейтинг')
+
+    # фильтрация по рейтингу
+    def filter_min_rating(self, queryset, name, value):
+        return queryset.annotate(avg_rating=Avg('ratings__rating')).filter(avg_rating__gte=value)
+
+    # фильтрация по названию ресторана
+    restaurants = ModelMultipleChoiceFilter(
+        field_name='title',
+        queryset=Restaurants.objects.all(),
+        to_field_name='title',
+        label='Выберите Ресторан'
+
+    )
+
+    # фильтрация по ценовому диапазону
+    price_range = django_filters.RangeFilter(field_name='price_people')
 
     class Meta:
         model = Restaurants
-        fields = ['name']
+        fields = ['restaurants', 'locate']
 
 
 class RestaurantListView(ListAPIView):
     queryset = Restaurants.objects.all()
     serializer_class = RestaurantSerializer
-    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filter_backends = [OrderingFilter, SearchFilter, DjangoFilterBackend]
+    pagination_class = LargeResultsSetPagination
     filterset_class = RestaurantFilter
+    search_fields = ['title']
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -54,7 +83,7 @@ class RetrieveUpdateDestroyRestaurant(RetrieveUpdateDestroyAPIView):
 
 
 class AddToFavorite(GenericAPIView, CreateModelMixin):
-    #permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = FavoriteSerializer
     queryset = Favorite.objects.all()
 
@@ -75,9 +104,10 @@ class RemoveFromFavorite(DestroyAPIView):
     serializer_class = FavoriteSerializer
     queryset = Favorite.objects.all()
 
+
 class CommentAPIView(views.APIView):
     permission_classes = [IsAuthenticated, IsBusinessUser]
-    
+
     def get(self, request):
         comment = Comment.objects.all()
         serializer = CommentSerializer(comment, many=True)
@@ -88,8 +118,8 @@ class CommentAPIView(views.APIView):
         if serializer.is_valid():
             serializer.save(owner=self.request.user)
         return Response(serializer.data, status=201)
-    
-        
+
+
 class CommentDetailAPIView(views.APIView):
     def get_comment(self, pk):
         try:
@@ -120,3 +150,32 @@ class CommentDetailAPIView(views.APIView):
             comment.delete()
             return Response(status=204)
         return Response(status=404)
+
+
+class RatingAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk, *args, **kwargs):
+        serializer = RatingSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        obj, _ = Rating.objects.get_or_create(restaurant_id=pk, user=request.user)
+        obj.rating = request.data['rating']
+        obj.save()
+        return Response(request.data, status=status.HTTP_201_CREATED)
+
+    def put(self, request, pk, *args, **kwargs):
+        serializer = RatingSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        obj, _ = Rating.objects.get_or_create(restaurant_id=pk, user=request.user)
+        obj.rating = request.data['rating']
+        obj.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, pk, *args, **kwargs):
+        obj, _ = Rating.objects.get_or_create(restaurant_id=pk, user=request.user)
+        obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
