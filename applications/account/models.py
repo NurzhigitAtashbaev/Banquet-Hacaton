@@ -36,12 +36,17 @@ class UserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
     user_list = [('default', 'Customer'), ('business', 'Business')]
-    username = models.CharField(max_length=200, null=True, blank=True)
+    username = models.CharField(max_length=200, blank=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=100)
+    category = models.CharField(choices=user_list, default='default', max_length=50)
+
+    first_name = models.CharField(max_length=50, blank=True)
+    last_name = models.CharField(max_length=50, blank=True)
+    avatar = models.ImageField(upload_to='avatars', blank=True)
+
     activation_code = models.CharField(max_length=50, blank=True)
     is_active = models.BooleanField(default=False)
-    category = models.CharField(choices=user_list, default='default', max_length=50)
 
     objects = UserManager()
 

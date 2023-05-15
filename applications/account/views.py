@@ -1,7 +1,8 @@
 from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from .serializers import *
+from .serializers import (RegisterSerializer, UpdateSerializer, ForgotPasswordSerializer,
+                          ForgotPasswordComleteSerializer, AccountSerializer)
 from rest_framework.response import Response
 from .models import CustomUser
 
@@ -43,9 +44,20 @@ class ForgotPasswordCompleteAPIView(APIView):
         return Response('пароль успешно изменён')
 
 
-class UserDetailView(RetrieveAPIView):
+class CustomUserUpdateAPIView(APIView):
+
+    def put(self, request):
+        user = request.user
+        serializer = UpdateSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+
+
+class AccountView(RetrieveAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = AccountSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):

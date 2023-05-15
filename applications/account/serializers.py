@@ -17,7 +17,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'password', 'password2')
+        fields = ('email', 'password', 'password2', 'category')
 
     def validate_email(self, email):
         return email
@@ -78,9 +78,13 @@ class ForgotPasswordComleteSerializer(serializers.Serializer):
         user.save(update_fields=['password', 'activation_code'])
 
 
-class UserSerializer(serializers.ModelSerializer):
-    favorites = RestaurantSerializer(many=True, read_only=True)
-
+class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'favorites']
+        fields = '__all__'
+
+
+class UpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'first_name', 'last_name', 'avatar')

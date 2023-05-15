@@ -40,7 +40,9 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_filters',
     'drf_yasg',
+    'corsheaders',
 
     'applications.account',
     'restaurants',
@@ -133,14 +135,14 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
+EMAIL_HOST_PASSWORD = 'flyfxtokabufmtnu'
+EMAIL_HOST_USER = 'dead.baha.31@gmail.com'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
-
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
@@ -152,3 +154,18 @@ SIMPLE_JWT = {
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8080',
+    'http://127.0.0.1:8000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+    'http://34.28.220.66',
+    'http://34.133.205.247',
+    'http://34.133.205.247',
+    'http://185.117.151.195',
+    'http://212.241.20.75',
+    'http://185.117.149.69',
+    'http://192.168.68.58',
+]
