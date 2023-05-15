@@ -45,3 +45,8 @@ class RestaurantSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class MenuSerializers(serializers.ModelSerializer):
+
+    class Meta:
+        model = Menu
+        fields = '__all__'

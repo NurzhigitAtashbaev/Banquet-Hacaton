@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Restaurants, Favorite, Comment
+from .models import Restaurants, Favorite, Comment, Menu
 
 
 @admin.register(Restaurants)
@@ -11,4 +11,10 @@ class RestaurantsAdmin(admin.ModelAdmin):
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ['user', 'item', 'date_added']
 
-admin.site.register(Comment)
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['owner', 'restaurant', 'text', 'created_at', 'updated_at']
+
+@admin.register(Menu)
+class MenuAdmin(admin.ModelAdmin):
+    list_display = ['title', 'price', 'description', 'image',]
