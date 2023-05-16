@@ -40,3 +40,13 @@ class Rating(models.Model):
 
     def __str__(self):
         return f'{self.user} - {"поставил рейтинг - ресторану"} {self.rating}'
+
+
+class Menu(models.Model):
+    title = models.CharField(max_length=255)
+    price = models.PositiveIntegerField()
+    description = models.TextField()
+    image = models.ImageField(upload_to='restauran-menu')
+
+    def __str__(self) -> str:
+        return self.title
