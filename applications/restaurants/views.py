@@ -6,7 +6,8 @@ from rest_framework.mixins import CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
 from .models import Restaurants, Favorite, Comment, Rating
 from .permissions import IsBusinessUser
-from .serializers import RestaurantSerializer, FavoriteSerializer, CommentSerializer, RatingSerializer
+from .serializers import RestaurantSerializer, FavoriteSerializer, CommentSerializer, RatingSerializer, \
+    WhatsAppContactSerializer
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
@@ -217,6 +218,20 @@ class CalculateView(views.APIView):
             'boorsok': boorsok
         }
         return Response(response_data)
+
+
+class WhatsAppContactView(views.APIView):
+    def post(self, request):
+        serializer = WhatsAppContactSerializer(data=request.data)
+        if serializer.is_valid():
+            phone_number = serializer.validated_data['phone_number']
+
+            whatsapp_url = f'https://web.whatsapp.com/send?phone={phone_number}'
+
+            return Response({'whatsapp_url': whatsapp_url}, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 

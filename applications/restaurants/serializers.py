@@ -45,3 +45,17 @@ class RestaurantSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class WhatsAppContactSerializer(serializers.Serializer):
+    phone_number = serializers.CharField()
+
+    def validate_phone_number(self, value):
+        cleaned_number = ''.join(filter(str.isdigit, value))
+
+        if not cleaned_number.isdigit() or len(cleaned_number) < 9 or len(cleaned_number) > 15:
+            raise serializers.ValidationError('Invalid phone number')
+
+        if not value.startswith('+'):
+            raise serializers.ValidationError('Phone number must start with "+"')
+
+        return cleaned_number
+
