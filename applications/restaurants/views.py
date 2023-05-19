@@ -3,15 +3,17 @@ from rest_framework import views
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, \
     ListAPIView, GenericAPIView, DestroyAPIView
 from rest_framework.mixins import CreateModelMixin
-from rest_framework.permissions import IsAuthenticated
-from .models import Restaurants, Favorite, Comment, Rating
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
+from .models import Restaurants, Favorite, Comment, Rating, Menu
 from .permissions import IsBusinessUser
 from .serializers import RestaurantSerializer, FavoriteSerializer, CommentSerializer, RatingSerializer, \
     WhatsAppContactSerializer
+from .serializers import RestaurantSerializer, FavoriteSerializer, CommentSerializer, RatingSerializer, MenuSerializers
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import ModelMultipleChoiceFilter
 from django.db.models import Avg
@@ -233,5 +235,8 @@ class WhatsAppContactView(views.APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+class MenuModelViewSet(ModelViewSet):
+    serializer_class = MenuSerializers
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = Menu.objects.all()
 

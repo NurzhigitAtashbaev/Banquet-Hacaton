@@ -79,8 +79,13 @@ class ForgotPasswordComleteSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    favorites = RestaurantSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
+
+class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'favorites']
+        fields = ('username', 'first_name', 'last_name', 'avatar')

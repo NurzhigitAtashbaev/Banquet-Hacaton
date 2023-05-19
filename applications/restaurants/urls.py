@@ -1,7 +1,12 @@
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from .views import (AddToFavorite, CreateRestaurant, RetrieveUpdateDestroyRestaurant, FavoriteList, RemoveFromFavorite,
                     RestaurantListView, CommentAPIView, CommentDetailAPIView, RatingAPIView, CalculateView,
-                    WhatsAppContactView)
+                    WhatsAppContactView, RestaurantListView, CommentAPIView, CommentDetailAPIView, RatingAPIView,
+                    CalculateView, MenuModelViewSet)
+
+router = DefaultRouter()
+router.register('menu', MenuModelViewSet)
 
 urlpatterns = [
     path('all/', RestaurantListView.as_view(), name='restaurant-list'),
@@ -14,5 +19,7 @@ urlpatterns = [
     path('comment-detail/<int:pk>/', CommentDetailAPIView.as_view(), name='comment-detail'),
     path('leave/rating/<int:pk>/', RatingAPIView.as_view(), name='rating-create'),
     path('product/calculation/', CalculateView.as_view(), name='product-calculation'),
-    path('contact/created/', WhatsAppContactView.as_view(), name='contact-created')
+    path('contact/created/', WhatsAppContactView.as_view(), name='contact-created'),
+    path('product/calculation/', CalculateView.as_view(), name='product calculation'),
+    path('', include(router.urls))
 ]

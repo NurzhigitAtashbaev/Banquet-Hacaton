@@ -59,3 +59,9 @@ class WhatsAppContactSerializer(serializers.Serializer):
 
         return cleaned_number
 
+
+class MenuSerializers(serializers.ModelSerializer):
+
+    class Meta:
+        model = Menu
+        fields = '__all__'

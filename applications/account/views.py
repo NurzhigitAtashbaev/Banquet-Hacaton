@@ -51,3 +51,13 @@ class UserDetailView(RetrieveAPIView):
     def get_object(self):
         return self.request.user
     
+class UserUpdateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    def put(self, request):
+        user = request.user
+        serializer = UserUpdateSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+    
