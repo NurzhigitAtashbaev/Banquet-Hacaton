@@ -43,6 +43,8 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
     avatar = models.ImageField(upload_to='avatars')
+
+    # favorites = models.ManyToManyField(models.Restaurants, null=True, blank=True)
     
     activation_code = models.CharField(max_length=50, blank=True)
     is_active = models.BooleanField(default=False)

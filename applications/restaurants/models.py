@@ -17,7 +17,7 @@ class Restaurants(models.Model):
 
 class Favorite(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    item = models.ForeignKey(Restaurants, on_delete=models.CASCADE)
+    items = models.ForeignKey(Restaurants, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
 
 
