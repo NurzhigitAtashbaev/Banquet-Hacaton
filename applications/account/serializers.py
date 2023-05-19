@@ -3,7 +3,7 @@ from rest_framework import serializers
 # from django.contrib.auth import get_user_model
 from .models import CustomUser
 from .send_email import send_activation_code, send_reset_password_code
-from ..restaurants.serializers import RestaurantSerializer
+from applications.restaurants.serializers import FavoriteSerializer, Favorite
 
 
 # User = get_user_model()  # CustomUser
@@ -79,10 +79,17 @@ class ForgotPasswordComleteSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    
+
+    favorites = serializers.SerializerMethodField()
+
+    def get_favorites(self, obj):
+        favorites = Favorite.objects.filter(user=obj)
+        serializer = FavoriteSerializer(favorites, many=True)
+        return serializer.data
+
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = ('email', 'password', 'username', 'favorites')
 
 class UserUpdateSerializer(serializers.ModelSerializer):
 

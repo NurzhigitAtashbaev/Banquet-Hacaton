@@ -4,9 +4,12 @@ from django.db.models import Avg
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(slug_field='email', read_only=True)
+    items = serializers.SlugRelatedField(slug_field='title', read_only=True)
+
     class Meta:
         model = Favorite
-        fields = '__all__'
+        fields = ('user', 'items', 'date_added')
 
 
 class CommentSerializer(serializers.ModelSerializer):

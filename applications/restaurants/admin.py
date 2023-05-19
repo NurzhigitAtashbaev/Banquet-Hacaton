@@ -9,7 +9,7 @@ class RestaurantsAdmin(admin.ModelAdmin):
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ['user', 'item', 'date_added']
+    list_display = ['user', 'items', 'date_added']
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
