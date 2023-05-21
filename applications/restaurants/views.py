@@ -74,7 +74,7 @@ class CreateRestaurant(CreateAPIView):
     permission_classes = [IsAuthenticated, IsBusinessUser]
 
     def perform_create(self, serializer):
-        serializer.save(business=self.request.user)  # Сохранение ресторана с указанием пользователя
+        serializer.save(owner=self.request.user)  # Сохранение ресторана с указанием пользователя
 
 
 class RetrieveUpdateDestroyRestaurant(RetrieveUpdateDestroyAPIView):
