@@ -32,7 +32,8 @@ class RatingSerializer(serializers.ModelSerializer):
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
-    comment = CommentSerializer(many=True)
+    comment = CommentSerializer(many=True, required=False)
+    owner = serializers.SlugRelatedField(slug_field='email', read_only=True)
 
     def to_representation(self, instance):
         res = super().to_representation(instance)

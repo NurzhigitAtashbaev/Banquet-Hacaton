@@ -4,6 +4,7 @@ from applications.account.models import CustomUser
 
 
 class Restaurants(models.Model):
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     title = models.CharField(max_length=155, )
     image = models.ImageField(upload_to='restaurant-image', )
     price_people = models.CharField(max_length=225)

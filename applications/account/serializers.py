@@ -17,8 +17,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'password', 'password2')
-
+        fields = '__all__'
     def validate_email(self, email):
         return email
 
@@ -89,8 +88,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'password', 'username', 'favorites')
-
+        fields = '__all__'
 class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
