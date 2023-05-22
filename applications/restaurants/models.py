@@ -6,7 +6,6 @@ from applications.account.models import CustomUser
 class Restaurants(models.Model):
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     title = models.CharField(max_length=155, )
-    image = models.ImageField(upload_to='restaurant-image', )
     price_people = models.CharField(max_length=225)
     locate = models.CharField(max_length=200)
     working_hours = models.CharField(max_length=200)
@@ -51,3 +50,10 @@ class Menu(models.Model):
 
     def __str__(self) -> str:
         return self.title
+    
+class RestaurantImage(models.Model):
+    restaurant = models.ForeignKey(Restaurants, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='restaurant-image')
+
+    def __str__(self):
+        return "%s" % (self.restaurant.name)

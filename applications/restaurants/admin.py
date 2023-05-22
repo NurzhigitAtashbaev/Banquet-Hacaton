@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Restaurants, Favorite, Comment, Menu
+from .models import Restaurants, Favorite, Comment, Menu, RestaurantImage
 
 
 @admin.register(Restaurants)
 class RestaurantsAdmin(admin.ModelAdmin):
-    list_display = ['title', 'image', 'price_people', 'locate', 'working_hours', 'features']
+    list_display = ['title', 'price_people', 'locate', 'working_hours', 'features']
 
 
 @admin.register(Favorite)
@@ -18,3 +18,7 @@ class CommentAdmin(admin.ModelAdmin):
 @admin.register(Menu)
 class MenuAdmin(admin.ModelAdmin):
     list_display = ['title', 'price', 'description', 'image',]
+
+@admin.register(RestaurantImage)
+class RestaurantImageAdmin(admin.ModelAdmin):
+    list_display = ['id', 'restaurant', 'image']
